@@ -1,38 +1,47 @@
-# Vessel Detector — Segmentacja naczyń dna oka
+# Vessel Detector
 
-Projekt 2 z przedmiotu Informatyka w Medycynie. Detekcja naczyń krwionośnych
-na obrazach dna siatkówki oka (binarna klasyfikacja piksela: naczynie / tło).
+Automated retinal blood vessel detection in fundus images — pixel-wise binary
+classification (vessel / background), comparing three approaches of increasing
+complexity:
 
-## Struktura projektu
+1. **Image processing** — preprocessing → Frangi filter → Otsu thresholding → morphology
+2. **Classical ML** — Random Forest on image patches with feature extraction
+3. **Deep learning** — U-Net (PyTorch)
+
+Everything lives in a single notebook (`vessel_detector.ipynb`), including EDA,
+hyperparameter search, metrics (ROC/PR curves, confusion matrices), method
+comparison, and a small interactive GUI.
+
+## Project structure
 
 ```
 Vessel-detector/
-├── vessel_detector.ipynb   # główny notebook z całym pipeline'em
-├── requirements.txt        # zależności
-├── data/                   # obrazy + maski eksperckie + FOV (np. baza HRF)
+├── vessel_detector.ipynb   # the whole pipeline
+├── requirements.txt
+├── data/                   # images + expert masks + FOV (not tracked)
 │   ├── images/
-│   ├── manual1/            # maski eksperckie (gold standard)
-│   └── mask/               # maski FOV
-├── models/                 # zapisane modele (RF, U-Net)
-└── results/                # wyniki, wizualizacje, metryki
+│   ├── manual1/            # expert masks (gold standard)
+│   └── mask/               # FOV masks
+├── models/                 # saved models (RF, U-Net) (not tracked)
+└── results/                # visualisations and metrics
 ```
 
-## Pobieranie danych
+## Getting the data
 
-Ze względu na rozmiar, obrazy nie są dołączone (folder data).
-Przed odpaleniem programu pobierz dane z ponizszych zbiorów danych i rozpakuj według schematu:
+The images are not included due to size. Download one of the supported datasets
+and unpack it as follows:
 
-- Obrazy oryginalne powinny trafić do `data/images/`
-- Maski eksperckie (tzw. Gold Standard) trafiają do `data/manual1/`
-- Maski widoczności (Field of View / FOV) trafiają do `data/mask/`
+- original images → `data/images/`
+- expert (gold standard) masks → `data/manual1/`
+- field-of-view (FOV) masks → `data/mask/`
 
-Linki do obsługiwanych zbiorów danych:
+Supported datasets:
 
 - **HRF**: https://www5.cs.fau.de/research/data/fundus-images/
 - **STARE**: http://cecas.clemson.edu/~ahoover/stare/probing/
 - **CHASE**: https://blogs.kingston.ac.uk/retinal/chasedb1/
 
-## Uruchomienie
+## Running
 
 ```bash
 python -m venv .venv
@@ -40,9 +49,3 @@ source .venv/bin/activate
 pip install -r requirements.txt
 jupyter notebook vessel_detector.ipynb
 ```
-
-## Zakres realizacji
-
-- [x] Wymagania obowiązkowe — przetwarzanie obrazu (filtr Frangi'ego + morfologia)
-- [x] Wymagania na 4.0 — klasyfikator ML (np. Random Forest) na wycinkach z ekstrakcją cech
-- [x] Wymagania na 5.0 — U-Net (PyTorch)
